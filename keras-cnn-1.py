@@ -1,5 +1,5 @@
 #Victoria Agrinya
-#Last update: 12.5.19
+#Last update: 12.9.19
 
 from __future__ import absolute_import, division, print_function
 import tensorflow as tf
@@ -8,7 +8,7 @@ from keras.preprocessing import sequence
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Reshape
 from keras.layers import Embedding
-from keras.layers import Conv1D, GlobalMaxPooling1D
+from keras.layers import Conv1D, GlobalMaxPooling1D, MaxPooling1D
 import numpy as np
 from resources import SongData, Track
 import pandas as pd
@@ -26,17 +26,19 @@ cols = ['mfcc', 'pop', 'tempo', 'valence', 'energy']
 df = SongData(uris, cols)
 
 mfcc = df.mfcc(uris)
-print(len(mfcc))
+df.train_test()
 
 
-# model = Sequential()
-# model.add(Reshape((1,0), input_shape=(1000,)))
-# model.add(Conv1D(100, 10, activation='relu', input_shape=(TIME_PERIODS, num_sensors)))
-# model.add(Conv1D(100, 10, activation='relu'))
-# model.add(MaxPooling1D(3))
+model = Sequential() 
+model.add(Conv1D(100, 10, activation='relu', input_shape = (1000, None)))
+#model.add(Conv1D(100, 10, activation='relu'))
+#model.add(MaxPooling1D(3))
 # model.add(Conv1D(160, 10, activation='relu'))
 # model.add(Conv1D(160, 10, activation='relu'))
-# model.add(GlobalAveragePooling1D())
-# model.add(Dropout(0.5))
-# model.add(Dense(num_classes, activation='softmax'))
-# print(model.summary())
+#model.add(GlobalMaxPooling1D())
+model.add(Dropout(0.1))
+model.add(Dense(units = 46, activation='softmax'))
+model.compile(optimizer = 'sgd, ', loss = 'mean-squared-error', metrics = 'accuracy')
+model.fit(x = [df.x_train], y = [df.y_train], batch_size = 4, epochs=5, verbose=1, 
+validation_data=df.test, shuffle = True, steps_per_epoch=1, validation_freq=5)
+print(model.summary())
