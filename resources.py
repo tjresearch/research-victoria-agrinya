@@ -1,10 +1,11 @@
 #Victoria Agrinya
-#Last updated: 12.9.19
+#Last updated: 01.06.20
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import spotipy.util as util
 import pandas as pd
 import librosa as lib
+import numpy as np
 
 class Track:
     manager = SpotifyClientCredentials("8f408e92f7d24929ae7ac2613ebc11dc", "59dcf725c5494f7a8b31672ff4d46655")
@@ -51,10 +52,8 @@ class SongData:
         self.data = []
         self.df = pd.DataFrame()
         self.cols = features
-        self.li = []
         self.x_train = []
         self.y_train = []
-        self.test = []
         self.works = []
 
     def makeDF(self):
@@ -83,21 +82,22 @@ class SongData:
             track = Track(i)
             try:
                 #storing mfcc values
-                y, sr = lib.load("/Users/vicki/Documents/Senior_Research/Hot 100 MP3s/" + track.getArtist() + " - " + track.getName()+ ".mp3", duration=30)
-                mfcc = lib.feature.mfcc(y=y,sr=sr, n_mfcc=5)
-                self.li.append(mfcc[0:1000:1])
+                y, sr = lib.load("/Users/vicki/Documents/Senior_Research/Hot 100 MP3s/" + track.getArtist() + " - " + track.getName()+ ".mp3", duration=30, dtype="float")
+                mfcc = lib.feature.mfcc(y=y,sr=sr, n_mfcc=10)
+                self.x_train.append(mfcc)
                 self.works.append(track)
             except FileNotFoundError:
                 pass
-        return self.li
+        self.x_train= np.expand_dims(self.x_train, axis=1)
+        self.x_train= np.expand_dims(self.x_train, axis=1)
+        return self.x_train
 
     def train_test(self):
-        for i in range(len(self.works)//2):
+        for i in range(len(self.works)):
             track = self.works[i]
-            self.x_train.append(self.li[i])
+            # self.x_train.append(self.x_train[i])
             self.y_train.append(track.getPop())
+        #Got rid of "test" list, from now on will test using a subset of the training data
+        self.y_train = np.expand_dims(y_train, axis=1)
+        self.y_train = np.expand_dims(y_train, axis=1)
         
-        for i in range(len(self.x_train)//2, len(self.x_train), 1):
-            track = self.works[i]
-            self.test.append(self.li[i], track.getPop())
-            
