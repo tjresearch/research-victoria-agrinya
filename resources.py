@@ -1,5 +1,5 @@
 #Victoria Agrinya
-#Last updated: 01.06.20
+#Last updated: 01.14.20
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import spotipy.util as util
@@ -83,21 +83,17 @@ class SongData:
             try:
                 #storing mfcc values
                 y, sr = lib.load("/Users/vicki/Documents/Senior_Research/Hot 100 MP3s/" + track.getArtist() + " - " + track.getName()+ ".mp3", duration=30, dtype="float")
-                mfcc = lib.feature.mfcc(y=y,sr=sr, n_mfcc=10)
+                mfcc = lib.feature.mfcc(y=y,sr=sr, n_mfcc=1) # np.ndarray [shape=(n_mfcc, t)] MFCC sequence
+                #one mfcc contains 1292 floats
                 self.x_train.append(mfcc)
                 self.works.append(track)
             except FileNotFoundError:
                 pass
-        self.x_train= np.expand_dims(self.x_train, axis=1)
-        self.x_train= np.expand_dims(self.x_train, axis=1)
         return self.x_train
 
     def train_test(self):
         for i in range(len(self.works)):
             track = self.works[i]
-            # self.x_train.append(self.x_train[i])
             self.y_train.append(track.getPop())
-        #Got rid of "test" list, from now on will test using a subset of the training data
-        self.y_train = np.expand_dims(y_train, axis=1)
-        self.y_train = np.expand_dims(y_train, axis=1)
+        #Got rid of "test" list, from now on will test using a portion of the training data
         
