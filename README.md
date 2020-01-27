@@ -1,6 +1,6 @@
 # Spotify Song Popularity Prediction
 ## Overview
-Uses a convolutional neural network with EchoNest song features and MFCC data from current Billboard Hot 100 songs as inputes to predict the Spotify popularity score of a given song based on its similarities to other popular songs. 
+Uses a convolutional neural network with Spotify song features and MFCC data from current Billboard Hot 100 songs as inputes to predict the Spotify popularity score of a given song based on its similarities to other popular songs. 
 ## Requirements
 - Libraries
   - Spotipy
